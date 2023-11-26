@@ -26,7 +26,7 @@
 
 cmake_minimum_required(VERSION 3.6)
 
-set(APP_NAME szj)
+set(APP_NAME hjctest)
 project(${APP_NAME})
 
 if (XCODE)
@@ -45,8 +45,10 @@ if (NOT DEFINED BUILD_ENGINE_DONE) # to test szj into root project
 endif ()
 
 # record sources, headers, resources...
-set(GAME_SOURCE)
-set(GAME_HEADER)
+set(GAME_SOURCE
+        Classes/MainGame.cpp)
+set(GAME_HEADER
+        Classes/MainGame.h)
 set(GAME_UI_SRC)
 
 if (WINDOWS)
@@ -73,6 +75,8 @@ set(compiler_c_flags "-Wno-error=format-security")
 list(APPEND GAME_SOURCE
     Classes/AppDelegate.cpp
     Classes/HelloWorldScene.cpp
+
+
 )
 list(APPEND GAME_HEADER
     Classes/AppDelegate.h

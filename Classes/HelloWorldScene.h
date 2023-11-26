@@ -33,7 +33,10 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-    
+
+    virtual void onEnterTransitionDidFinish();
+
+
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
