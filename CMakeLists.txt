@@ -46,10 +46,13 @@ endif ()
 
 # record sources, headers, resources...
 set(GAME_SOURCE
-        Classes/MainGame.cpp)
+        Classes/MainGame.cpp
+)
 set(GAME_HEADER
         Classes/MainGame.h)
-set(GAME_UI_SRC)
+set(GAME_UI_SRC
+        Classes/InputManager.cpp
+        Classes/InputManager.h)
 
 if (WINDOWS)
     set(GAME_RES_FOLDER

@@ -34,7 +34,9 @@
 USING_NS_CC;
 
 //static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1080);
-static cocos2d::Size designResolutionSize = cocos2d::Size(680, 320);
+//static cocos2d::Size designResolutionSize = cocos2d::Size(680, 400);
+static cocos2d::Size designResolutionSize = cocos2d::Size(680, 400);
+
 
 AppDelegate::AppDelegate()
 {
@@ -74,7 +76,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLViewImpl::createWithRect("HelloCpp",
                         cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height)
                                             );
-
         auto viewSize = glview->getFrameSize();
         HWND hwnd = glview->getWin32Window();
         SetWindowPos(hwnd, HWND_TOP, -((int)viewSize.width + 10), (int)viewSize.height + 500, 0, 0, SWP_NOSIZE);
@@ -91,11 +92,52 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0f / 60);
 
 
+    setResolutionSize(designResolutionSize.width, designResolutionSize.height);
+
+    register_all_packages();
+
+    // create a scene. it's an autorelease object
+    auto scene = HelloWorld::createScene();
+
+    // run
+    director->runWithScene(scene);
+
+    return true;
+}
+
+// This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
+void AppDelegate::applicationDidEnterBackground() {
+    Director::getInstance()->stopAnimation();
+
+#if USE_AUDIO_ENGINE
+    AudioEngine::pauseAll();
+#endif
+}
+
+// this function will be called when the app is active again
+void AppDelegate::applicationWillEnterForeground() {
+    Director::getInstance()->startAnimation();
+
+#if USE_AUDIO_ENGINE
+    AudioEngine::resumeAll();
+#endif
+}
+
+void AppDelegate::setResolutionSize(float width, float height) {
+
+    //todo 游戏过程中改变的话，已经生成的ui的位置没有适配
+    designResolutionSize = cocos2d::Size(width, height);
+
+    auto director = Director::getInstance();
+    auto glview = director->getOpenGLView();
+
+    glview->setFrameSize(float(width),float(height));
+
     auto size = glview->getFrameSize();
     auto w = size.width;
     auto h = size.height;
-    auto CONFIG_SCREEN_WIDTH = designResolutionSize.width;
-    auto CONFIG_SCREEN_HEIGHT = designResolutionSize.height;
+    auto CONFIG_SCREEN_WIDTH = width;
+    auto CONFIG_SCREEN_HEIGHT = height;
     auto CONFIG_SCREEN_AUTOSCALE = "FIXED_HEIGHT";
 
     auto scaleX = w / CONFIG_SCREEN_WIDTH;
@@ -127,34 +169,4 @@ bool AppDelegate::applicationDidFinishLaunching() {
     CCLOG("display - CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT %s, %.1f, %.1f", CONFIG_SCREEN_AUTOSCALE, CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT);
     glview->setDesignResolutionSize(CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT, ResolutionPolicy::NO_BORDER); //设置游戏渲染分辨率
 
-
-
-
-    register_all_packages();
-
-    // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
-
-    // run
-    director->runWithScene(scene);
-
-    return true;
-}
-
-// This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
-void AppDelegate::applicationDidEnterBackground() {
-    Director::getInstance()->stopAnimation();
-
-#if USE_AUDIO_ENGINE
-    AudioEngine::pauseAll();
-#endif
-}
-
-// this function will be called when the app is active again
-void AppDelegate::applicationWillEnterForeground() {
-    Director::getInstance()->startAnimation();
-
-#if USE_AUDIO_ENGINE
-    AudioEngine::resumeAll();
-#endif
 }

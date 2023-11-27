@@ -18,6 +18,17 @@ public:
     virtual void update(float dt);
     void initUI();
     void generatePlabelSpr();
+
+    //---
+    void addTextureCache(std::string path);
+    void addTexturCache(std::vector<std::string> pathList);
+
+    void removeTextureCache(std::string path);
+    void removeTextureCache(std::vector<std::string> pathList);
+
+    void loadplist(std::vector<std::string>);
+    void unloadplist(std::vector<std::string>);
+
     CREATE_FUNC(MainGame); //加了这玩意才会跑init
 };
 
