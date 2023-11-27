@@ -33,10 +33,8 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
-static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
+//static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1080);
+static cocos2d::Size designResolutionSize = cocos2d::Size(680, 320);
 
 AppDelegate::AppDelegate()
 {
@@ -73,7 +71,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 //        glview = GLViewImpl::createWithRect("HelloCpp", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
-        glview = GLViewImpl::createWithRect("HelloCpp", cocos2d::Rect(0, 0, largeResolutionSize.width, largeResolutionSize.height));
+        glview = GLViewImpl::createWithRect("HelloCpp",
+                        cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height)
+                                            );
+
+        auto viewSize = glview->getFrameSize();
+        HWND hwnd = glview->getWin32Window();
+        SetWindowPos(hwnd, HWND_TOP, -((int)viewSize.width + 10), (int)viewSize.height + 500, 0, 0, SWP_NOSIZE);
 #else
         glview = GLViewImpl::create("HelloCpp");
 #endif
@@ -86,24 +90,45 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0f / 60);
 
-    // Set the design resolution
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
-    auto frameSize = glview->getFrameSize();
-    // if the frame's height is larger than the height of medium size.
-    if (frameSize.height > mediumResolutionSize.height)
-    {        
-        director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
+
+    auto size = glview->getFrameSize();
+    auto w = size.width;
+    auto h = size.height;
+    auto CONFIG_SCREEN_WIDTH = designResolutionSize.width;
+    auto CONFIG_SCREEN_HEIGHT = designResolutionSize.height;
+    auto CONFIG_SCREEN_AUTOSCALE = "FIXED_HEIGHT";
+
+    auto scaleX = w / CONFIG_SCREEN_WIDTH;
+    auto scaleY = h / CONFIG_SCREEN_HEIGHT;
+    auto scale = 1.0f;
+
+    if (strcmp(CONFIG_SCREEN_AUTOSCALE, "EXACT_FIT") == 0) {
+        scale = 1.0f;
+        glview->setDesignResolutionSize(CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT, ResolutionPolicy::EXACT_FIT);
     }
-    // if the frame's height is larger than the height of small size.
-    else if (frameSize.height > smallResolutionSize.height)
-    {        
-        director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
+    else if (strcmp(CONFIG_SCREEN_AUTOSCALE, "FILL_ALL") == 0) {
+        CONFIG_SCREEN_WIDTH = w;
+        CONFIG_SCREEN_HEIGHT = h;
+        scale = 1.0;
+        glview->setDesignResolutionSize(CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT, ResolutionPolicy::SHOW_ALL);
     }
-    // if the frame's height is smaller than the height of medium size.
-    else
-    {        
-        director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
+    else if (strcmp(CONFIG_SCREEN_AUTOSCALE, "FIXED_WIDTH") == 0) {
+        scale = scaleX;
+        CONFIG_SCREEN_HEIGHT = h / scale;
     }
+    else if (strcmp(CONFIG_SCREEN_AUTOSCALE, "FIXED_HEIGHT") == 0) {
+        scale = scaleY;
+        CONFIG_SCREEN_WIDTH = w / scale;
+    }
+    else {
+        scale = 1.0f;
+        CCLOG("display - invalid CONFIG_SCREEN_AUTOSCALE \"%s\"", CONFIG_SCREEN_AUTOSCALE);
+    }
+    CCLOG("display - CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT %s, %.1f, %.1f", CONFIG_SCREEN_AUTOSCALE, CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT);
+    glview->setDesignResolutionSize(CONFIG_SCREEN_WIDTH, CONFIG_SCREEN_HEIGHT, ResolutionPolicy::NO_BORDER); //设置游戏渲染分辨率
+
+
+
 
     register_all_packages();
 

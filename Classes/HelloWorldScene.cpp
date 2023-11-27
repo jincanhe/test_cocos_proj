@@ -41,7 +41,7 @@ static void problemLoading(const char* filename)
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    PLabel::initWithFontPath("fonts/Huiwen-mincho.otf");
+    PLabel::initWithFontPath("fonts/font.otf");
     //////////////////////////////
     // 1. super init first
     if ( !Scene::init() )
@@ -83,56 +83,11 @@ bool HelloWorld::init()
     /////////////////////////////
     // 3. add your codes below...
 
-    // add a label shows "Hello World"
-    // create and initialize a label
 
-//    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    auto label = PLabel::createWithTTF("tqweiouqwe901824mkxzmcxnvd-asofi0-sadfi3425fijpdsnvxcklnvcxbioxcvjbh90weur09-0i--zxczC0i2132-013i123", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    auto label2 = PLabel::createWithTTF("Hello World", "fonts/Huiwen-mincho.otf", 12);
-    label2->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height - 30.f));
-    this->addChild(label2, 1);
-
-    label2->setTTFFontName("fonts/SiYuanSongTi.otf");
-
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
-
-    auto spr = PLabel::getTestSprite();
-    spr->setAnchorPoint(Vec2(0.,1.f));
-    spr->setPosition(Vec2(visibleSize.width/2 + origin.x - 200.f , visibleSize.height/2 + origin.y));
-    this->addChild(spr);
-
-
-
-
+//    auto label = PLabel::createWithTTF("tqweiouqwe901824mkxzmcxnvd-asofi0-sadfi3425fijpdsnvxcklnvcxbioxcvjbh90weur09-0i--zxczC0i2132-013i123", "fonts/Marker Felt.ttf", 24);
+//    label->setPosition(Vec2(origin.x + visibleSize.width/2,
+//                            origin.y + visibleSize.height - label->getContentSize().height));
+//    this->addChild(label, 1);
     return true;
 }
 
