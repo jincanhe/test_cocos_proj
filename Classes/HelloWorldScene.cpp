@@ -83,7 +83,7 @@ bool HelloWorld::init()
     /////////////////////////////
     // 3. add your codes below...
 
-
+/////ceshi tijiao
 //    auto label = PLabel::createWithTTF("tqweiouqwe901824mkxzmcxnvd-asofi0-sadfi3425fijpdsnvxcklnvcxbioxcvjbh90weur09-0i--zxczC0i2132-013i123", "fonts/Marker Felt.ttf", 24);
 //    label->setPosition(Vec2(origin.x + visibleSize.width/2,
 //                            origin.y + visibleSize.height - label->getContentSize().height));
