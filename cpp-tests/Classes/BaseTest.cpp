@@ -206,8 +206,6 @@ void TestList::tableCellTouched(TableView* table, TableViewCell* cell)
     if (_cellTouchEnabled)
     {
         auto index = cell->getIdx();
-
-        index = 38 - 1;
         if (_testCallbacks[index])
         {
             auto test = _testCallbacks[index]();
@@ -408,7 +406,15 @@ bool TestCase::init()
         _priorTestItem = MenuItemImage::create(s_pathB1, s_pathB2, CC_CALLBACK_1(TestCase::priorTestCallback, this));
         _restartTestItem = MenuItemImage::create(s_pathR1, s_pathR2, CC_CALLBACK_1(TestCase::restartTestCallback, this));
         _nextTestItem = MenuItemImage::create(s_pathF1, s_pathF2, CC_CALLBACK_1(TestCase::nextTestCallback, this));
-        
+
+        _nextTestItem->setScale(0.4);
+        _nextTestItem->setOpacity(128);
+        _restartTestItem->setScale(0.4);
+        _restartTestItem->setOpacity(128);
+        _priorTestItem->setScale(0.4);
+        _priorTestItem->setOpacity(128);
+
+
         ttfConfig.fontSize = 20;
         auto backLabel = Label::createWithTTF(ttfConfig, "Back");
         auto backItem = MenuItemLabel::create(backLabel, CC_CALLBACK_1(TestCase::onBackCallback, this));

@@ -77,6 +77,9 @@ void MainGame::initUI() {
     cloudSpr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(cloudSpr);
 
+
+    //    std::vector<std::string> listFonts = FileUtils::getInstance()->listFiles("spine");
+    // todo 加载整个文件夹的文件
 }
 
 void MainGame::generatePlabelSpr() {

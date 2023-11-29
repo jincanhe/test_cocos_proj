@@ -1317,7 +1317,7 @@ void TestListFiles::onEnter()
     this->addChild(cntLabel);
     cntLabel->setPosition(winSize.width / 2, winSize.height / 3);
     // writeTest
-    std::vector<std::string> listFonts = FileUtils::getInstance()->listFiles("fonts");
+    std::vector<std::string> listFonts = FileUtils::getInstance()->listFiles("spine");
     auto defaultPath = FileUtils::getInstance()->getDefaultResourceRootPath();
     std::vector<std::string> list = FileUtils::getInstance()->listFiles (defaultPath);
 
