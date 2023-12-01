@@ -139,6 +139,7 @@ bool BatchingExample::init () {
     _title = "Batching";
 
     _atlas = new (__FILE__, __LINE__) Atlas("29024.atlas", &textureLoader, true);
+//    _atlas = new (__FILE__, __LINE__) Atlas("29024.atlas", &textureLoader, true);
     CCASSERT(_atlas, "Error reading atlas file.");
 
     // This attachment loader configures attachments with data needed for cocos2d-x rendering.
@@ -151,8 +152,12 @@ bool BatchingExample::init () {
     CCASSERT(_skeletonData, !binary.getError().isEmpty() ? binary.getError().buffer() : "Error reading skeleton data.");
 
 
+//    delete _skeletonData;
+//    delete _stateData;
+    delete _attachmentLoader;
+
     // Setup mix times.
-    _stateData = new (__FILE__, __LINE__) AnimationStateData(_skeletonData);
+//    _stateData = new (__FILE__, __LINE__) AnimationStateData(_skeletonData);
 //    _stateData->setMix("walk", "jump", 0.2f);
 //    _stateData->setMix("jump", "run", 0.2f);
 
@@ -162,7 +167,7 @@ bool BatchingExample::init () {
     SkeletonAnimation* sn = nullptr;
     for (int i = 0; i < 5; i++) {
         SkeletonAnimation* skeletonNode = SkeletonAnimation::createWithData(_skeletonData, false);
-        skeletonNode->setAnimationStateData(_stateData);
+//        skeletonNode->setAnimationStateData(_stateData);
         skeletonNode->setAnimation(0, "level1", true);
         skeletonNode->addAnimation(0, "level2", true, 1.f);
 
@@ -176,7 +181,7 @@ bool BatchingExample::init () {
         if(sn == nullptr)
         {
             sn = skeletonNode;
-            sn->retain();
+            sn->autorelease();
         }
 
 
@@ -184,7 +189,23 @@ bool BatchingExample::init () {
     }
 
     sn->removeFromParentAndCleanup(true);
-    sn->release();
+
+
+    for (int i = 0; i < 50; i++) {
+        SkeletonAnimation* skeletonNode = SkeletonAnimation::createWithData(_skeletonData, false);
+//        skeletonNode->setAnimationStateData(_stateData);
+        skeletonNode->setAnimation(0, "level1", true);
+        skeletonNode->addAnimation(0, "level2", true, 1.f);
+
+
+
+        skeletonNode->setPosition(Vec2(
+                RandomHelper::random_int(xMin, xMax),
+                RandomHelper::random_int(yMin, yMax)
+        ));
+        addChild(skeletonNode);
+        skeletonNode->setScale(0.2f);
+    }
 
     SCALE_SKELETON_NODE(skeletonNode);
     return true;
@@ -197,7 +218,7 @@ BatchingExample::~BatchingExample() {
 
     delete _skeletonData;
     delete _stateData;
-    delete _attachmentLoader;
+//    delete _attachmentLoader;
     delete _atlas;
 }
 

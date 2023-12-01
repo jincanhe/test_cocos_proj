@@ -47,9 +47,11 @@ endif ()
 # record sources, headers, resources...
 set(GAME_SOURCE
         Classes/MainGame.cpp
+        Classes/Sprite_Blur.cpp
 )
 set(GAME_HEADER
-        Classes/MainGame.h)
+        Classes/MainGame.h
+        Classes/Sprite_Blur.h)
 set(GAME_UI_SRC
         Classes/InputManager.cpp
         Classes/InputManager.h)

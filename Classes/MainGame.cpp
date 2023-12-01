@@ -4,6 +4,7 @@
 #include "MainGame.h"
 #include "InputManager.h"
 #include "AppDelegate.h"
+#include "Sprite_Blur.h"
 
 bool MainGame::init() {
 
@@ -72,14 +73,16 @@ void MainGame::initUI() {
     addTextureCache("texture/maingame/maingame_1.png");
 
 
-    auto cloudSpr = Sprite::createWithSpriteFrameName("texture/maingame/maingame_1.png");
+    auto cloudSpr = SpriteBlur::create("texture/maingame/maingame_1.png");
     cloudSpr->setAnchorPoint(Vec2(0.5,0.5));
     cloudSpr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(cloudSpr);
 
 
-    //    std::vector<std::string> listFonts = FileUtils::getInstance()->listFiles("spine");
     // todo 加载整个文件夹的文件
+    auto imageList = FileUtils::getInstance()->getStringFromFile("image/test.txt");
+    auto res = splitStringByDelimiter(imageList, "\r\n");
+    addTextureCache(res);
 }
 
 void MainGame::generatePlabelSpr() {
@@ -113,7 +116,7 @@ void MainGame::addTextureCache(std::string path) {
 
 }
 
-void MainGame::addTexturCache(std::vector<std::string> pathList) {
+void MainGame::addTextureCache(std::vector<std::string> pathList) {
     for (auto& path: pathList) {
         addTextureCache(path);
     }
@@ -135,5 +138,23 @@ void MainGame::removeTextureCache(std::vector<std::string> pathList) {
     {
         removeTextureCache(path);
     }
+}
+
+std::vector<std::string>
+MainGame::splitStringByDelimiter(const std::string &inputString, const std::string &delimiter) {
+    std::string s = inputString;
+    std::vector<std::string> outputVector;
+
+    size_t pos = 0;
+    std::string token;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        outputVector.push_back(token);
+        s.erase(0, pos + delimiter.length());
+    }
+
+    outputVector.push_back(s);
+
+    return outputVector;
 }
 

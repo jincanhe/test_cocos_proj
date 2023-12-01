@@ -21,7 +21,7 @@ public:
 
     //---
     void addTextureCache(std::string path);
-    void addTexturCache(std::vector<std::string> pathList);
+    void addTextureCache(std::vector<std::string> pathList);
 
     void removeTextureCache(std::string path);
     void removeTextureCache(std::vector<std::string> pathList);
@@ -29,7 +29,12 @@ public:
     void loadplist(std::vector<std::string>);
     void unloadplist(std::vector<std::string>);
 
+
+    //--common
+    std::vector<std::string> splitStringByDelimiter(const std::string& inputString, const std::string& delimiter);
     CREATE_FUNC(MainGame); //加了这玩意才会跑init
 };
+
+
 
 #endif //hjctest_MAINGAME_H

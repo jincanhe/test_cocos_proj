@@ -479,7 +479,7 @@ void SpriteBlur::initProgram()
     setProgramState(programState);
     CC_SAFE_RELEASE(programState);
     CC_SAFE_RELEASE(program);
-    
+
     auto size = getTexture()->getContentSizeInPixels();
 
     SET_UNIFORM(_programState, "resolution", size);
