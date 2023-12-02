@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/cocos2d" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/tools/szjpublisher" vcs="Git" />
   </component>
 </project>

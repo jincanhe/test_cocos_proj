@@ -1,3 +1,0 @@
-image/test/CloseNormal.png
-image/test/CloseSelected.png
-image/test/HelloWorld.png

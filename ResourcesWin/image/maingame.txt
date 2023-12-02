@@ -1,0 +1,9 @@
+image/maingame/maingame_1.png
+image/maingame/maingame_2.png
+image/maingame/maingame_3.png
+image/maingame/maingame_4.png
+image/maingame/maingame_5.png
+image/maingame/main_bg.png
+image/maingame/spineBg_1.png
+image/maingame/spineBg_2.png
+

@@ -4,8 +4,9 @@
 
 #ifndef SZJ_MAINGAME_H
 #define SZJ_MAINGAME_H
-
+#define WINDOW
 #include "cocos2d.h"
+#include "common.h"
 
 USING_NS_CC;
 
@@ -19,21 +20,20 @@ public:
     void initUI();
     void generatePlabelSpr();
 
+    void clear();
     //---
-    void addTextureCache(std::string path);
-    void addTextureCache(std::vector<std::string> pathList);
-
-    void removeTextureCache(std::string path);
-    void removeTextureCache(std::vector<std::string> pathList);
-
-    void loadplist(std::vector<std::string>);
-    void unloadplist(std::vector<std::string>);
-
 
     //--common
-    std::vector<std::string> splitStringByDelimiter(const std::string& inputString, const std::string& delimiter);
-    CREATE_FUNC(MainGame); //加了这玩意才会跑init
+    CREATE_FUNC(MainGame);
+
+private:
+    std::vector<std::string> plistList;
+    std::vector<std::string> imageList;
+
+    Label* sizeLabel;
+    Node* node;
 };
+
 
 
 

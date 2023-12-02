@@ -54,7 +54,15 @@ set(GAME_HEADER
         Classes/Sprite_Blur.h)
 set(GAME_UI_SRC
         Classes/InputManager.cpp
-        Classes/InputManager.h)
+        Classes/InputManager.h
+        Classes/ResManager.cpp
+        Classes/ResManager.h
+        Classes/common.cpp
+        Classes/common.h
+        Classes/Player.cpp
+        Classes/Player.h
+        Classes/GameMap.cpp
+        Classes/GameMap.h)
 
 if (WINDOWS)
     set(GAME_RES_FOLDER

@@ -76,9 +76,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLViewImpl::createWithRect("HelloCpp",
                         cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height)
                                             );
-        auto viewSize = glview->getFrameSize();
-        HWND hwnd = glview->getWin32Window();
-        SetWindowPos(hwnd, HWND_TOP, -((int)viewSize.width + 10), (int)viewSize.height + 500, 0, 0, SWP_NOSIZE);
+        // auto viewSize = glview->getFrameSize();
+        // HWND hwnd = glview->getWin32Window();
+        // SetWindowPos(hwnd, HWND_TOP, -((int)viewSize.width + 10), (int)viewSize.height + 500, 0, 0, SWP_NOSIZE);
 #else
         glview = GLViewImpl::create("HelloCpp");
 #endif
