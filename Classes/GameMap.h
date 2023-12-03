@@ -33,7 +33,7 @@ public:
 
     void setBlocks();
     MAPBLOCK* getMapBlock(int x, int y);
-
+    void drawMap();
 
     CREATE_FUNC(GameMap);
 

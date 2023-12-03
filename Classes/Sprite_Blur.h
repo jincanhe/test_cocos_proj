@@ -21,7 +21,7 @@ public:
     void setBlurSampleNum(float num);
 
 protected:
-    float _blurRadius = 0.7;
+    float _blurRadius = 0.7f;
     float _blurSampleNum;
 };
 

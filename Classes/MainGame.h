@@ -18,8 +18,9 @@ public:
 
     virtual void update(float dt);
     void initUI();
-    void generatePlabelSpr();
 
+    void generateDebugInfo();
+    void updateDebugInfo();
     void clear();
     //---
 
@@ -30,8 +31,12 @@ private:
     std::vector<std::string> plistList;
     std::vector<std::string> imageList;
 
-    Label* sizeLabel;
     Node* node;
+
+    //--debug
+    Sprite* plableSpr = nullptr;
+    PLabel* debugLable = nullptr;
+
 };
 
 

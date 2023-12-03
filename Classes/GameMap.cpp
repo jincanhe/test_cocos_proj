@@ -5,23 +5,27 @@
 #include "GameMap.h"
 
 bool GameMap::init() {
-
-
-    auto size = sizeof(MAPBLOCK);
-
-
-
-    auto size1 = sizeof(MAPBLOCK1);
-
     setBlocks();
+    drawMap();
 
+    // auto spr = Sprite::createWithSpriteFrameName("image/eggdog/yyh_1.png");
+    // spr->setAnchorPoint(Vec2(0,1));
+    // spr->setScale(0.3f);
+    // spr->setPosition(Vec2( 2 * 32.f,2 * -32.f));
+    //
+    // auto eg = Sprite::createWithSpriteFrameName("image/eggdog/egg_1.png");
+    // eg->setAnchorPoint(Vec2(0,1));
+    // eg->setPosition(Vec2( 10 * 32.f,2 * -32.f));
+    //
+    // this->addChild(spr,65555);
+    // this->addChild(eg,65555);
     return true;
 
 }
 
 void GameMap::setBlocks() {
-    width = 20;
-    height = 5;
+    width = 30;
+    height = 20;
 
     auto dataSize = width * height * sizeof(MAPBLOCK);
     mapBlocks = (MAPBLOCK*)malloc(dataSize);
@@ -47,4 +51,25 @@ GameMap::MAPBLOCK* GameMap::getMapBlock(int x, int y) {
         return nullptr;
 
     return &mapBlocks[y * width + x];
+}
+
+void GameMap::drawMap() {
+    DrawNode* tileIndicator = DrawNode::create();
+    addChild(tileIndicator, 65532);
+
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            Color4F iColor;
+            Vec2 pt1(x * 32.0f, y * 32.0f * -1.0f);
+            Vec2 pt2(pt1.x + 32.0f, pt1.y - 32.0f);
+
+            MAPBLOCK* block = getMapBlock(x, y);
+            tileIndicator->drawRect(pt1, pt2, Color4F(.0f, 0.2f, 0.5f, 0.6f));
+
+            if(getMapBlock(x,y)->blockType == BlockType::MAP_POS) {
+                tileIndicator->drawLine(Vec2(pt1.x,pt1.y - 16.f), Vec2(pt2.x,pt2.y + 16.f), Color4F(1.0f, 0.2f, 0.5f, 0.6f));
+            }
+        }
+    }
 }
