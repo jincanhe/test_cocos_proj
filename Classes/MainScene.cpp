@@ -22,7 +22,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "HelloWorldScene.h"
+#include "MainScene.h"
 #include "MainGame.h"
 USING_NS_CC;
 

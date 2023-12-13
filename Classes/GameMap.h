@@ -19,6 +19,8 @@ struct MAPBLOCK {
     uint8_t inpassable : 1;
     BlockType blockType : 6;
     uint8_t lock : 1;
+
+    // MAPBLOCK(const uint8_t i) : inpassable(i){};
 };
 
 struct MAPBLOCK1 {

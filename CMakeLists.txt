@@ -47,11 +47,10 @@ endif ()
 # record sources, headers, resources...
 set(GAME_SOURCE
         Classes/MainGame.cpp
-        Classes/Sprite_Blur.cpp
 )
 set(GAME_HEADER
         Classes/MainGame.h
-        Classes/Sprite_Blur.h)
+)
 set(GAME_UI_SRC
         Classes/InputManager.cpp
         Classes/InputManager.h
@@ -62,7 +61,16 @@ set(GAME_UI_SRC
         Classes/Player.cpp
         Classes/Player.h
         Classes/GameMap.cpp
-        Classes/GameMap.h)
+        Classes/GameMap.h
+        Classes/BaseView.cpp
+        Classes/BaseView.h
+        Classes/BlurMask.cpp
+        Classes/BlurMask.h
+        Classes/Test.cpp
+        Classes/Test.h
+        Classes/WsManager.cpp
+        Classes/WsManager.h
+)
 
 if (WINDOWS)
     set(GAME_RES_FOLDER
@@ -87,13 +95,13 @@ set(compiler_c_flags "-Wno-error=format-security")
 # add cross-platforms source files and header files
 list(APPEND GAME_SOURCE
     Classes/AppDelegate.cpp
-    Classes/HelloWorldScene.cpp
+        Classes/MainScene.cpp
 
 
 )
 list(APPEND GAME_HEADER
     Classes/AppDelegate.h
-    Classes/HelloWorldScene.h
+        Classes/MainScene.h
 )
 
 list(APPEND GAME_UI_SRC

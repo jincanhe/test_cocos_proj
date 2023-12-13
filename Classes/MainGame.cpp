@@ -2,19 +2,75 @@
 // Created by hejincan on 2023/11/26.
 //
 #include "MainGame.h"
+
+#include <iostream>
+
 #include "InputManager.h"
-#include "Sprite_Blur.h"
 #include "ResManager.h"
 #include "GameMap.h"
+#include "BaseView.h"
+#include <bitset>
+#include "WsManager.h"
+
+union n1 {
+    int x;
+    uint8_t y;
+};
+
+union n2 {
+    struct n2_struct {
+        uint16_t x;
+        uint8_t y;
+        uint16_t z;
+        uint8_t y1;
+        int x2 ;
+        uint8_t z1;
+        uint8_t z22;
+
+    };
+
+    int g;
+};
+
+union testunion {
+    unsigned char bits[4];
+    int num;
+    uint8_t u8t[4];
+}t;
+
+
+struct S{
+    std::string s_;
+    S(std::string s) :s_(s) {}
+
+    S(const S& rhs) :s_(rhs.s_) {}
+    S& operator=(const S& rhs) { s_ = rhs.s_; return *this; }
+};
+
 
 bool MainGame::init() {
+
+    S s1{ "aaaaaaaaaaaaaaaa" };
+    std::cout << reinterpret_cast<const void*>(s1.s_.data()) << '\n';
+    S s2 = std::move(s1);
+    std::cout << reinterpret_cast<const void*>(s2.s_.data()) << '\n';
+
+
+    auto z = sizeof(testunion);
+
+    t.num = 114514;
+
+    for (int i = 0; i < 4; i++) {
+       auto b = std::bitset<8>(t.u8t[i]);
+    }
+
+    test();
+
     plistList = {
         "plist/farmT.plist",
     };
     imageList = {
         "image/maingame.txt",
-        "image/licheng.txt",
-        "image/eggdog.txt",
     };
 
     ResManager::getInstance()->loadres(plistList, imageList);
@@ -30,6 +86,7 @@ void MainGame::update(float dt) {
     if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_SPACE)) {
         clear();
         CCLOG("key_space");
+        WsManager::getInstance()->disconnect();
     }
 
     if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_B)) {
@@ -38,6 +95,7 @@ void MainGame::update(float dt) {
     }
 
     if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_Z)) {
+        ResManager::getInstance()->loadres(plistList, imageList);
 
     }
 
@@ -73,6 +131,10 @@ void MainGame::initUI() {
     auto gamemap = GameMap::create();
     gamemap->setPosition(Vec2(0, visibleSize.height));
     this->addChild(gamemap, 6666);
+
+
+    WsManager::getInstance()->connect();
+
 }
 
 void MainGame::generateDebugInfo() {
@@ -97,12 +159,17 @@ void MainGame::generateDebugInfo() {
 }
 
 void MainGame::updateDebugInfo() {
-    char buf[256];
-    sprintf(buf,"%f mb",getCurrentMemoryUsage() * 0.000001f);
-    debugLable->setString(buf);
+    // char buf[256];
+    // sprintf(buf,"%f mb",getCurrentMemoryUsage() * 0.000001f);
+    // debugLable->setString(buf);
 }
 
 
 void MainGame::clear() {
     ResManager::getInstance()->unloadres(plistList, imageList);
+}
+
+
+void MainGame::test() {
+
 }

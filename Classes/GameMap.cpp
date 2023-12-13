@@ -4,6 +4,32 @@
 
 #include "GameMap.h"
 
+void GameMap::setBlocks() {
+    width = 30;
+    height = 20;
+
+    auto dataSize = width * height * sizeof(MAPBLOCK);
+    mapBlocks = (MAPBLOCK*)malloc(dataSize);
+    mapBlocks = new MAPBLOCK[ width * height]();
+
+    auto size = sizeof(MAPBLOCK);
+    for (size_t i = 0; i < dataSize / sizeof(MAPBLOCK); i++) {
+        mapBlocks[i].inpassable = 1;
+        mapBlocks[i].blockType = BlockType::MAP_VOID;
+        mapBlocks[i].lock = 1;
+
+        if(i == 5) {
+            mapBlocks[i].blockType = BlockType::MAP_POS;
+            mapBlocks[i].lock = 0;
+        }
+        if(i == 99) {
+            mapBlocks[i].blockType = BlockType::MAP_POS;
+            mapBlocks[i].lock = 0;
+        }
+    }
+
+}
+
 bool GameMap::init() {
     setBlocks();
     drawMap();
@@ -20,29 +46,6 @@ bool GameMap::init() {
     // this->addChild(spr,65555);
     // this->addChild(eg,65555);
     return true;
-
-}
-
-void GameMap::setBlocks() {
-    width = 30;
-    height = 20;
-
-    auto dataSize = width * height * sizeof(MAPBLOCK);
-    mapBlocks = (MAPBLOCK*)malloc(dataSize);
-    for (size_t i = 0; i < dataSize / sizeof(MAPBLOCK); i++) {
-        mapBlocks[i].inpassable = 1;
-        mapBlocks[i].blockType = BlockType::MAP_VOID;
-        mapBlocks[i].lock = 1;
-
-        if(i == 5) {
-                mapBlocks[i].blockType = BlockType::MAP_POS;
-                mapBlocks[i].lock = 0;
-        }
-        if(i == 99) {
-            mapBlocks[i].blockType = BlockType::MAP_POS;
-            mapBlocks[i].lock = 0;
-        }
-    }
 
 }
 

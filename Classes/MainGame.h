@@ -6,7 +6,6 @@
 #define SZJ_MAINGAME_H
 #define WINDOW
 #include "cocos2d.h"
-#include "common.h"
 
 USING_NS_CC;
 
@@ -26,6 +25,9 @@ public:
 
     //--common
     CREATE_FUNC(MainGame);
+
+    //--debug
+    void test();
 
 private:
     std::vector<std::string> plistList;

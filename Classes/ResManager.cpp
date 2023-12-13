@@ -15,13 +15,12 @@ void ResManager::addTextureCache(const std::vector<std::string>& pathList) {
         for (auto& path: pathList) {
         if (FileUtils::getInstance()->isFileExist(path))
         {
-            SpriteFrame* frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(path);
-            if (frame == nullptr)
+            if (!SpriteFrameCache::getInstance()->checksfCache(path))
             {
                 Texture2D* texture = Director::getInstance()->getTextureCache()->addImage(path);
                 Rect rect = Rect::ZERO;
                 rect.size = texture->getContentSize();
-                frame = SpriteFrame::createWithTexture(texture, rect);
+                SpriteFrame* frame = SpriteFrame::createWithTexture(texture, rect);
                 frame->setAnchorPoint(Vec2(0.5, 0.5));
                 SpriteFrameCache::getInstance()->addSpriteFrame(frame, path);
                 CCLOG("--resManager addTexture: %s", path.c_str());
