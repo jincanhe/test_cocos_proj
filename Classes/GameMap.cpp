@@ -5,11 +5,11 @@
 #include "GameMap.h"
 
 void GameMap::setBlocks() {
-    width = 30;
-    height = 20;
+    width = 2;
+    height = 2;
 
     auto dataSize = width * height * sizeof(MAPBLOCK);
-    mapBlocks = (MAPBLOCK*)malloc(dataSize);
+    // mapBlocks = (MAPBLOCK*)malloc(dataSize);
     mapBlocks = new MAPBLOCK[ width * height]();
 
     auto size = sizeof(MAPBLOCK);
@@ -17,14 +17,18 @@ void GameMap::setBlocks() {
         mapBlocks[i].inpassable = 1;
         mapBlocks[i].blockType = BlockType::MAP_VOID;
         mapBlocks[i].lock = 1;
+        mapBlocks[i].test = 255;
+        mapBlocks[i].test1 = 12;
 
-        if(i == 5) {
+        if(i == 2) {
             mapBlocks[i].blockType = BlockType::MAP_POS;
             mapBlocks[i].lock = 0;
         }
-        if(i == 99) {
+        if(i == 3) {
             mapBlocks[i].blockType = BlockType::MAP_POS;
             mapBlocks[i].lock = 0;
+            mapBlocks[i].test = 255;
+            mapBlocks[i].test1 = 12;
         }
     }
 

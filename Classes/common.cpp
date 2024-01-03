@@ -24,7 +24,7 @@ std::vector<std::string> splitStringByDelimiter(const std::string& inputString, 
     }
 
     //需要最后换行可以打开
-    // outputVector.push_back(s);
+    outputVector.push_back(s);
     return outputVector;
 }
 

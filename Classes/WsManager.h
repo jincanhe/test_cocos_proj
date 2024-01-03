@@ -13,10 +13,7 @@
 USING_NS_CC;
 
 class WsManager : public network::WebSocket::Delegate {
-
-
     network::WebSocket* ws = nullptr;
-
 public:
     static WsManager* instance;
     static WsManager* getInstance();
@@ -32,6 +29,5 @@ public:
     void connect();
     void disconnect();
 };
-
 
 #endif //WSMANAGER_H

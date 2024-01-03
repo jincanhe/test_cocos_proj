@@ -19,8 +19,6 @@ void WsManager::onOpen(network::WebSocket* ws) {
 
 void WsManager::onMessage(network::WebSocket* ws, const network::WebSocket::Data& data) {
 
-    auto a = 1;
-    auto b = 2;
     CCLOG("onMessage");
 }
 
@@ -37,8 +35,8 @@ void WsManager::connect() {
         ws = new network::WebSocket();
     }
 
-    // ws->init(*this, "ws://192.168.1.191:8080/api/ws", nullptr, "cacert.pem");  //3 特定协议  4 密钥
-    ws->init(*this, "ws://www.10zho.com:2345/api/ws", nullptr, "cacert.pem");  //3 特定协议  4 密钥
+    ws->init(*this, "ws://192.168.1.21:8080/api/ws", nullptr, "cacert.pem");  //3 特定协议  4 密钥
+    // ws->init(*this, "ws://www.10zho.com:2345/api/ws", nullptr, "cacert.pem");  //3 特定协议  4 密钥
 }
 
 void WsManager::disconnect() {

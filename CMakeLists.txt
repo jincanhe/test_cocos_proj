@@ -70,6 +70,8 @@ set(GAME_UI_SRC
         Classes/Test.h
         Classes/WsManager.cpp
         Classes/WsManager.h
+        Classes/TestClass.cpp
+        Classes/TestClass.h
 )
 
 if (WINDOWS)

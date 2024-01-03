@@ -2,7 +2,7 @@
 // Created by hejincan on 2023/11/26.
 //
 #include "MainGame.h"
-
+#include "TestClass.h"
 #include <iostream>
 
 #include "InputManager.h"
@@ -48,26 +48,11 @@ struct S{
 };
 
 
+int index = 1;
 bool MainGame::init() {
-
-    S s1{ "aaaaaaaaaaaaaaaa" };
-    std::cout << reinterpret_cast<const void*>(s1.s_.data()) << '\n';
-    S s2 = std::move(s1);
-    std::cout << reinterpret_cast<const void*>(s2.s_.data()) << '\n';
-
-
-    auto z = sizeof(testunion);
-
-    t.num = 114514;
-
-    for (int i = 0; i < 4; i++) {
-       auto b = std::bitset<8>(t.u8t[i]);
-    }
-
-    test();
-
     plistList = {
         "plist/farmT.plist",
+        "plist/laohu.plist",
     };
     imageList = {
         "image/maingame.txt",
@@ -80,17 +65,80 @@ bool MainGame::init() {
     return true;
 }
 
+void MainGame::animStateUpdate(float dt) {
+    animDt += dt;
+    currentAnimFrame = (int)(animDt * 12) % 12;
+
+    if(!playerSpr)
+    {
+
+        auto visibleSize = Director::getInstance()->getVisibleSize();
+        playerSpr = Sprite::createWithSpriteFrame(idleFrame[0]);
+        playerSpr->setAnchorPoint(Vec2(0.5, 0.5));
+        playerSpr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+        this->addChild(playerSpr);
+    }
+
+
+
+
+
+    std::vector<Vec2> offsetposMap = { Vec2(162,135),
+        Vec2(165,135),
+        Vec2(165,134),
+        Vec2(163,134),
+        Vec2(162,134),
+        Vec2(161,134),
+        Vec2(161,134),
+        Vec2(162,135),
+        Vec2(162,135),
+        Vec2(161,135),
+        Vec2(160,136),
+        Vec2(161,135),
+    };
+
+    // std::vector<Vec2> offsetposMap = { Vec2(93 ,129),
+    //     Vec2(98,129),
+    //     Vec2(101,129),
+    //     Vec2(101,128),
+    //     Vec2(93,129),
+    //     Vec2(98,129),
+    //     Vec2(161,134),
+    //     Vec2(162,135),
+    //     Vec2(162,135),
+    //     Vec2(161,135),
+    //     Vec2(160,136),
+    //     Vec2(161,135),
+    // };
+    playerSpr->setSpriteFrame(idleFrame[currentAnimFrame]);
+    playerSpr->setAnchorPoint(Vec2(0.5,0.5));
+    playerSpr->setPosition(offsetposMap[currentAnimFrame]);
+}
+
 void MainGame::update(float dt) {
+
+	animStateUpdate(dt);
+
     updateDebugInfo();
 
     if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_SPACE)) {
-        clear();
-        CCLOG("key_space");
-        WsManager::getInstance()->disconnect();
+        // CCLOG("key_space");
+        // WsManager::getInstance()->disconnect();
+
+
+        for(int i = 0 ; i <= 12; i++)
+        {
+            char buf[256];
+            sprintf(buf,"%d_%d.png",index,i+1);
+            idleFrame[i] = SpriteFrameCache::getInstance()->getSpriteFrameByName(buf);
+            index++;
+        }
     }
 
     if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_B)) {
         plableSpr->setVisible(!plableSpr->isVisible());
+        this->addChild(PLabel::create(std::to_string(index),28));
+        index ++;
         CCLOG("key_B");
     }
 
@@ -106,7 +154,21 @@ void MainGame::update(float dt) {
     InputManager::getInstance()->update(dt);
 }
 
+void MainGame::loadAnim() {
+    for(int i = 0 ; i <= 12; i++)
+    {
+        char buf[256];
+        sprintf(buf,"1_%d.tga",i+1);
+        idleFrame[i] = SpriteFrameCache::getInstance()->getSpriteFrameByName(buf);
+    }
+}
+
 void MainGame::initUI() {
+
+    loadAnim();
+
+    test();
+    return;
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     visibleSize.width += origin.x;

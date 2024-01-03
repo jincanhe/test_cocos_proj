@@ -15,7 +15,12 @@ class MainGame : public Node
 public:
     virtual bool init();
 
+    void animStateUpdate(float dt);
+
     virtual void update(float dt);
+
+    void loadAnim();
+
     void initUI();
 
     void generateDebugInfo();
@@ -38,6 +43,12 @@ private:
     //--debug
     Sprite* plableSpr = nullptr;
     PLabel* debugLable = nullptr;
+
+    int currentAnimFrame = 0;
+    float animDt = 0;
+
+    SpriteFrame* idleFrame[12];
+    Sprite* playerSpr;
 
 };
 

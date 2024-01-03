@@ -13,6 +13,10 @@ ResManager* ResManager::getInstance() {
 
 void ResManager::addTextureCache(const std::vector<std::string>& pathList) {
         for (auto& path: pathList) {
+            if(path == "")
+            {
+                continue;
+            }
         if (FileUtils::getInstance()->isFileExist(path))
         {
             if (!SpriteFrameCache::getInstance()->checksfCache(path))
