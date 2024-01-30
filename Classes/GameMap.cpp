@@ -8,7 +8,7 @@
 
 void GameMap::setBlocks() {
     width = 15;
-    height = 10;
+    height = 500;
 
     auto dataSize = width * height * sizeof(MAPBLOCK);
     // mapBlocks = (MAPBLOCK*)malloc(dataSize);
@@ -20,7 +20,7 @@ void GameMap::setBlocks() {
         mapBlocks[i].blockType = BlockType::MAP_VOID;
         mapBlocks[i].lock = 1;
 
-        if(i == 2 || i == 13 || i == 25 || i == 45 || i == 55 || i == 47) {
+        if(i == 2 || i == 4 || i == 13 || i == 25 || i == 45 || i == 55 || i == 47) {
             mapBlocks[i].blockType = BlockType::MAP_POS;
             mapBlocks[i].inpassable = 1;
             mapBlocks[i].lock = 0;
@@ -40,7 +40,8 @@ void GameMap::bindEvents() {
     {
         if (type == ui::Widget::TouchEventType::ENDED)
         {
-            generateHeatMap(5,5);
+            clearHeatMap();
+            generateHeatMap(0,0);
         }
     });
 }
@@ -62,8 +63,10 @@ GameMap::MAPBLOCK* GameMap::getMapBlock(int x, int y) {
 }
 
 void GameMap::drawMap() {
-    DrawNode* tileIndicator = DrawNode::create();
+    tileIndicator = DrawNode::create();
     addChild(tileIndicator, 65532);
+    heatDebugNode = Node::create();
+    addChild(heatDebugNode, 65533);
 
 
     for (int y = 0; y < height; y++) {
@@ -82,13 +85,28 @@ void GameMap::drawMap() {
     }
 }
 
-//------- 为终点 一次性生成所有格子的最短路径
-void GameMap::generateHeatMap(int startX, int startY) {
-
+void GameMap::clearHeatMap() {
     if(!flowBlocks)
     {
         flowBlocks = new FlowBlock[width * height]();
     }
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int pos = y * width + x;
+            flowBlocks[pos].integration = 65535;
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// 作用: 为终点 一次性生成所有格子的最短路径   todo: 多线程开启
+/////////////////////////////////////////////////////////////////////////////
+void GameMap::generateHeatMap(int startX, int startY) {
+    if(!flowBlocks)
+    {
+        flowBlocks = new FlowBlock[width * height]();
+    }
+
 
     //-----  初始化终点
     std::list<HeatFront> frontQueue;
@@ -98,25 +116,6 @@ void GameMap::generateHeatMap(int startX, int startY) {
     checkPos.xy.y = startY;
     checkPos.heat = 0;
 
-    checkPos.xy.x = 16;
-    checkPos.xy.y = 33;
-
-    checkPosNew.xy.x = 17;
-    checkPosNew.xy.y = 64;
-
-    checkPosLeft.xy.x = 3;
-    checkPosLeft.xy.y = 5;
-
-    checkPosRight.xy.x = 6;
-    checkPosRight.xy.y = 5;
-
-    checkPosTop.xy.x = 5;
-    checkPosTop.xy.y = 6;
-
-
-    checkPosDown.xy.x = 5;
-    checkPosDown.xy.y = 4;
-    return;
     frontQueue.push_back(checkPos);
 
 
@@ -125,28 +124,92 @@ void GameMap::generateHeatMap(int startX, int startY) {
     flowBlocks[pos].integration = 0;
     MAPBLOCK* block;
 
+    int count = 0;
+    int whileCount = 0;
     while (!frontQueue.empty())
     {
 
         checkPos = frontQueue.front();
         frontQueue.pop_front();
-
+        whileCount++;
         pos = checkPos.xy.y * width + checkPos.xy.x;
         block = &mapBlocks[pos];
         int now = flowBlocks[pos].integration;
 
         const bool checkBoolList[4] = { checkPos.xy.y > 0, checkPos.xy.y < height -1, checkPos.xy.x > 0, checkPos.xy.x < width - 1};
-        const int blockPosOffsets[4] = { -width, width, -1 ,1};    //  上, 下, 左, 右
+        const int blockPosOffsets[4] = { -width, width, -1 ,1};    //  下, 上, 左, 右
         int checkPosOffsets[4] = { -0x10000, 0x10000, -1, 1};
 
         for (int i = 0; i < 4; i++)
         {
             if(checkBoolList[i])
             {
+                //--- 对应格子的各种信息
                 int newPos = pos + blockPosOffsets[i];
                 block = &mapBlocks[newPos];
+                checkPosNew.xy.value = (uint32_t)((int)checkPos.xy.value + checkPosOffsets[i]);
+                //
+
+                int addVal = 10;
+
+                if(block->inpassable == 1)
+                {
+                    addVal = 5;
+                }
+
+                int newVal = addVal + now;
+
+                if(flowBlocks[newPos].integration == 65535)  //每一个格只处理一次
+                {
+                    flowBlocks[newPos].integration = newVal;  //真实存放值
+                    count++;
+                    checkPosNew.heat = newVal;
+                    block = &mapBlocks[newPos];
+
+
+                    auto itr = frontQueue.begin();
+
+
+                    while (itr != frontQueue.end())
+                    {
+                        //-- 这里优化了 对于有 不同花费时的循环次数  todo理解
+                          // auto insPos = *itr;
+                          // if((int)insPos.heat > newVal)
+                          // {
+                          //     frontQueue.insert(itr, checkPosNew);
+                          // }
+                        itr++;
+                    }
+
+
+                    if(itr == frontQueue.end())
+                    {
+                        frontQueue.push_back(checkPosNew);
+                    }
+
+                }
 
             }
+        }
+    }
+
+
+    heatDebugNode->removeAllChildrenWithCleanup(true);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            Color4F iColor;
+            Vec2 pt1(x * 32.0f, y * 32.0f * -1.0f);
+            Vec2 pt2(pt1.x + 32.0f, pt1.y - 32.0f);
+
+
+            int pos = y * width + x;
+            char buf[256];
+            sprintf(buf,"%s",flowBlocks[pos].integration > 60000 ? "x" : std::to_string(flowBlocks[pos].integration).c_str());
+            auto label_1 = PLabel::createWithTTF(buf, "fonts/SiYuanSongTi.otf", 18);
+            label_1->setPosition(pt1 + Vec2(16.f,-16.f));
+            label_1->setTextColor(Color4B::BLACK);
+            heatDebugNode->addChild(label_1);
+
         }
     }
 

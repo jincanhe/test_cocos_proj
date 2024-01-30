@@ -75,7 +75,10 @@ void bindEvents();
 
 MAPBLOCK* getMapBlock(int x, int y);
     void drawMap();
-    void generateHeatMap(int startX, int startY);
+
+void clearHeatMap();
+
+void generateHeatMap(int startX, int startY);
 
     CREATE_FUNC(GameMap);
 
@@ -87,7 +90,8 @@ private:
     MAPBLOCK* mapBlocks;
 
     FlowBlock* flowBlocks;
-
+    DrawNode* tileIndicator;
+    Node* heatDebugNode;
 
 };
 
