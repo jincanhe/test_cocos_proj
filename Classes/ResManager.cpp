@@ -1,5 +1,5 @@
 #include "ResManager.h"
-#include "common.h"
+#include "Common.h"
 
 ResManager* ResManager::inst = nullptr;
 

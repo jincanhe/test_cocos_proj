@@ -15,12 +15,46 @@ enum class BlockType : uint8_t {
     MAP_POS,
 };
 
+
+
+union XYCheck {
+    uint32_t value;
+    struct {
+        int16_t x;
+        int16_t y;
+    };
+
+    // XYCheck() : value(0) {}
+    // XYCheck(int xIn, int yIn) : x(xIn), y(yIn) {}
+    // XYCheck(uint32_t valueIn) : value(valueIn) {}
+    // XYCheck(XYCheck& valueIn) : value(valueIn.value) {}
+    // operator uint32_t() const { return value; }
+};
+
+union HeatFront {
+    uint64_t value;
+    struct {
+        uint32_t heat;
+        XYCheck xy;
+    };
+
+    HeatFront() : value(0) {}
+    HeatFront(uint64_t valueIn) : value(valueIn) {}
+    HeatFront(HeatFront& valueIn) : value(valueIn.value) {}
+    operator uint64_t() const { return value; }
+};
+
+
+struct FlowBlock {
+    uint32_t integration : 24;
+    uint32_t flow : 8;
+};
+
+
 struct MAPBLOCK {
     uint8_t inpassable : 1;
     BlockType blockType : 6;
     uint8_t lock : 1;
-    uint8_t test;
-    uint8_t test1;
 
     // MAPBLOCK(const uint8_t i) : inpassable(i){};
 };
@@ -36,8 +70,12 @@ public:
     virtual bool init();
 
     void setBlocks();
-    MAPBLOCK* getMapBlock(int x, int y);
+
+void bindEvents();
+
+MAPBLOCK* getMapBlock(int x, int y);
     void drawMap();
+    void generateHeatMap(int startX, int startY);
 
     CREATE_FUNC(GameMap);
 
@@ -47,6 +85,8 @@ private:
     int width;
     int height;
     MAPBLOCK* mapBlocks;
+
+    FlowBlock* flowBlocks;
 
 
 };

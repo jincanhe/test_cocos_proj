@@ -17,4 +17,20 @@ class View2 : public cocos2d::ui::Widget {
 public:
     int view2_num;
 };
+
+
+class Animal {
+public:
+    Animal(){CCLOG("Animal");};
+    virtual ~Animal(){ CCLOG("~Animal");};
+    virtual void jiao(){ CCLOG("animal: jiao");};
+};
+
+class Dog : Animal {
+public:
+    Dog(){CCLOG("dog");};
+    ~Dog() override { CCLOG("~dog");};
+    void jiao() override { CCLOG("dog: jiao");};
+};
+
 #endif //TESTCLASS_H

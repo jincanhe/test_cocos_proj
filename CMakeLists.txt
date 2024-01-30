@@ -56,16 +56,14 @@ set(GAME_UI_SRC
         Classes/InputManager.h
         Classes/ResManager.cpp
         Classes/ResManager.h
-        Classes/common.cpp
-        Classes/common.h
+        Classes/Common.cpp
+        Classes/Common.h
         Classes/Player.cpp
         Classes/Player.h
         Classes/GameMap.cpp
         Classes/GameMap.h
         Classes/BaseView.cpp
         Classes/BaseView.h
-        Classes/BlurMask.cpp
-        Classes/BlurMask.h
         Classes/Test.cpp
         Classes/Test.h
         Classes/WsManager.cpp

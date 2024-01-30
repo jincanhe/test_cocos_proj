@@ -154,7 +154,7 @@ void RenderTextureSave::addImage(cocos2d::Ref* sender)
     _target->begin();
 
     Sprite* sprite = Sprite::create("Images/test-rgba1.png");
-    sprite->setPosition(sprite->getContentSize().width + CCRANDOM_0_1() * (s.width - sprite->getContentSize().width), sprite->getContentSize().height + CCRANDOM_0_1() * (s.height - sprite->getContentSize().height));
+    // sprite->setPosition(sprite->getContentSize().width + CCRANDOM_0_1() * (s.width - sprite->getContentSize().width), sprite->getContentSize().height + CCRANDOM_0_1() * (s.height - sprite->getContentSize().height));
     sprite->visit();
 
     // finish drawing and return context back to the screen

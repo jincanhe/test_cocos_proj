@@ -6,6 +6,8 @@
 #define SZJ_MAINGAME_H
 #define WINDOW
 #include "cocos2d.h"
+#include "ui/UIImageView.h"
+
 
 USING_NS_CC;
 
@@ -34,6 +36,8 @@ public:
     //--debug
     void test();
 
+    void loadOffsetTxt();
+
 private:
     std::vector<std::string> plistList;
     std::vector<std::string> imageList;
@@ -48,7 +52,11 @@ private:
     float animDt = 0;
 
     SpriteFrame* idleFrame[12];
+    SpriteFrame* idleFrame_1[12];
+    SpriteFrame* guangquan[12];
+    std::vector<std::string> idleFrameName;
     Sprite* playerSpr;
+    Sprite* playerSpr_1;
 
 };
 

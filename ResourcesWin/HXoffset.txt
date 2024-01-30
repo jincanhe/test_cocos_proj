@@ -1,0 +1,5 @@
+HXoffset/33002_offset.txt
+HXoffset/527_offset.txt
+HXoffset/564_offset.txt
+HXoffset/646_offset.txt
+HXoffset/647_offset.txt
