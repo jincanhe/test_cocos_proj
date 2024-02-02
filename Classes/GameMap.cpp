@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by hejincan on 2023/12/3.
 //
 
@@ -52,16 +52,14 @@ void GameMap::setBlocks() {
             mapBlocks[i].blockType = BlockType::MAP_ROAD;
         }
 
-        if( i == 11)
+        if (i == 11)
         {
             mapBlocks[i].blockType = BlockType::MAP_ROAD;
-
         }
 
-        if( i == 16)
+        if (i == 16)
         {
             mapBlocks[i].blockType = BlockType::MAP_VOID;
-
         }
     }
 }
@@ -94,7 +92,6 @@ void GameMap::initUI() {
 }
 
 bool GameMap::init() {
-
     initUI();
     setBlocks();
     drawMap();
@@ -167,6 +164,13 @@ void GameMap::clearHeatMap() {
 }
 
 void GameMap::drawHeatMap() {
+    std::unordered_map<int, std::string> arrowMap =
+    {
+        {2, u8"上"},
+        {6, u8"下"},
+        {4, u8"右"},
+        {8, u8"左"},
+    };
 
 
     std::vector<Vec2> flowIndex = {
@@ -183,32 +187,31 @@ void GameMap::drawHeatMap() {
 
 
     heatDebugNode->removeAllChildrenWithCleanup(true);
-    debugDrawNode->removeAllChildrenWithCleanup(true);
+    debugDrawNode->clear();
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
             Color4F iColor;
             Vec2 pt1(x * 32.0f, y * 32.0f * -1.0f);
-            Vec2 pt2(pt1.x + 32.0f, pt1.y - 32.0f);
 
 
             int pos = y * width + x;
             char buf[256];
-            sprintf(buf, "%s,%d", flowBlocks[pos].integration > 60000
+            sprintf(buf, "%s", flowBlocks[pos].integration > 60000
                                       ? "x"
-                                      : std::to_string(flowBlocks[pos].integration).c_str(),  flowBlocks[pos].flow);
+                                      : std::to_string(flowBlocks[pos].integration).c_str());
             auto label_1 = PLabel::createWithTTF(buf, "fonts/SiYuanSongTi.otf", 14);
             label_1->setPosition(pt1 + Vec2(16.f, -16.f));
             label_1->setTextColor(Color4B::BLACK);
             heatDebugNode->addChild(label_1);
 
-            Vec2 origin(pt1 + Vec2(16.f, 16.f));
-            Vec2 dest = origin + flowIndex[flowBlocks[pos].flow] * 16.0f;
-            origin.y *= -1.0f;
-            dest.y *= -1.0f;
-            debugDrawNode->drawLine(origin, dest, Color4F::YELLOW);
+            Vec2 origin(pt1 + Vec2(16.f, -16.f));
+            Vec2 dest = origin + Vec2(flowIndex[flowBlocks[pos].flow].x * 16.f, flowIndex[flowBlocks[pos].flow].y * -16.f);
 
+            // origin.y *= -1.0f;
+            // dest.y *= -1.0f;
+            debugDrawNode->drawLine(origin, dest, Color4F::YELLOW);
         }
     }
 }
@@ -303,7 +306,6 @@ void GameMap::generateHeatMap(int startX, int startY) {
         }
     }
 
-    flowBlocks[16].integration = 34;
     auto countP = PLabel::createWithTTF(std::to_string(count), "fonts/SiYuanSongTi.otf", 18);
     countP->setPosition(Vec2(32 * (width + 2), -50));
     countP->setTextColor(Color4B::BLACK);
@@ -316,16 +318,26 @@ void GameMap::generateHeatMap(int startX, int startY) {
 }
 
 void GameMap::generateVectorMap(int id) {
-    std::unordered_map<int,std::string> arrowMap =
+    std::unordered_map<int, std::string> arrowMap =
     {
-        {2,u8"上"},
-        {6,u8"下"},
-        {4,u8"右"},
-        {8,u8"左"},
+        {2, u8"上"},
+        {6, u8"下"},
+        {4, u8"右"},
+        {8, u8"左"},
     };
+
+
     int posList[] = {0, 0, -width, 0, 1, 0, width, 0, -1, 0};
+    const char noDiagCheckUpLeft[] = {4, 6, 0};
+    const char noDiagCheckUp[] = {4, 6, 8, 0};
+    const char noDiagCheckUpRight[] = {6, 8, 0};
+    const char noDiagCheckRight[] = {2, 6, 8, 0};
+    const char noDiagCheckDownRight[] = {2, 8, 0};
+    const char noDiagCheckDown[] = {2, 4, 8, 0};
+    const char noDiagCheckDownLeft[] = {2, 4, 0};
+    const char noDiagCheckLeft[] = {2, 4, 6, 0};
     const char noDiagCheckAll[] = {2, 4, 6, 8, 0};
-    const char* noDiagcheckPattern[] = {noDiagCheckAll};
+    const char* noDiagcheckPattern[] = { noDiagCheckAll, noDiagCheckLeft, noDiagCheckUp, noDiagCheckUpLeft, noDiagCheckRight, nullptr, noDiagCheckUpRight, nullptr, noDiagCheckDown, noDiagCheckDownLeft, nullptr, nullptr, noDiagCheckDownRight };
 
 
     for (int y = 0; y < height; y++)
@@ -336,23 +348,33 @@ void GameMap::generateVectorMap(int id) {
             int heatVal = flowBlocks[pos].integration;
 
 
-            if(heatVal == 65535)
+            if (heatVal == 65535)
             {
                 continue;
             }
 
-            int checkIndex = 0;
-            const char* checkList = noDiagcheckPattern[checkIndex];
 
             int i = 0;
 
-            int tempCost = 100;  //越低越优先
-            while(checkList[i] != 0)
+
+            //------- 纠正边界检测问题 : 用二进制运算
+            //------- 例如 原点,左上角 就肯定不检测 左和上
+            uint8_t checkIdx = 0;
+            //4个角
+            if (x == 0) checkIdx |= 0b00000001;
+            if (y == 0) checkIdx |= 0b00000010;
+            if(x == width - 1) checkIdx |= 0b00000100;
+            if(y == height - 1) checkIdx |= 0b00001000;
+            const char* checkList = noDiagcheckPattern[checkIdx];
+            //todo 碰撞也不检测
+            //
+            int tempCost = 100; //越低越优先
+            while (checkList[i] != 0)
             {
                 int newPos = pos + posList[checkList[i]];
 
                 //--- 防越界
-                if(newPos < 0 || newPos >= width * height)
+                if (newPos < 0 || newPos >= width * height)
                 {
                     i++;
                     continue;
@@ -366,7 +388,7 @@ void GameMap::generateVectorMap(int id) {
                 //
 
                 // 新的热力值 < 旧的热力值 ||  热力值 同等时 优先走 格子花销低的
-                if(newHeatVal < heatVal || (newHeatVal == heatVal && newBlockCost <= tempCost))
+                if (newHeatVal < heatVal || (newHeatVal == heatVal && newBlockCost <= tempCost))
                 {
                     flowBlocks[pos].flow = checkList[i];
                     heatVal = newHeatVal;
@@ -374,37 +396,6 @@ void GameMap::generateVectorMap(int id) {
                 }
                 i++;
             }
-
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
