@@ -58,11 +58,13 @@ struct S{
 int index = 1;
 
 int framesize = 12;
+
+DrawNode* drawNode;
 bool MainGame::init() {
     plistList = {
         "plist/farmT.plist",
-        "plist/laohu.plist",
-        "plist/magic.plist",
+//        "plist/laohu.plist",
+//        "plist/magic.plist",
     };
     imageList = {
         "image/maingame.txt",
@@ -72,6 +74,15 @@ bool MainGame::init() {
     initUI();
     generateDebugInfo();
     scheduleUpdate();
+
+
+    EventListenerKeyboard* keyboradListener;
+    keyboradListener = EventListenerKeyboard::create();
+    keyboradListener->onKeyReleased = CC_CALLBACK_2(MainGame::onKeyReleased,this);
+    Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(keyboradListener,1);
+
+
+
     return true;
 }
 
@@ -201,44 +212,22 @@ void MainGame::update(float dt) {
 
     updateDebugInfo();
 
-    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_SPACE)) {
-        // CCLOG("key_space");
-        // WsManager::getInstance()->disconnect();
 
-            if(framesize == 12)
-            {
-                framesize= 4;
-            }else
-            {
-                framesize++;
-            }
-
-        return;
-
-        for(int i = 0 ; i <= 12; i++)
-        {
-            char buf[256];
-            sprintf(buf,"%d_%d.png",index,i+1);
-            idleFrame[i] = SpriteFrameCache::getInstance()->getSpriteFrameByName(buf);
-            index++;
-        }
-    }
-
-    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_B)) {
-        plableSpr->setVisible(!plableSpr->isVisible());
-        this->addChild(PLabel::create(std::to_string(index),28));
-        index ++;
-        CCLOG("key_B");
-    }
-
-    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_Z)) {
-        ResManager::getInstance()->loadres(plistList, imageList);
-
-    }
-
-    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_X)) {
-        node->removeAllChildrenWithCleanup(true);
-    }
+//    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_B)) {
+//        plableSpr->setVisible(!plableSpr->isVisible());
+//        this->addChild(PLabel::create(std::to_string(index),28));
+//        index ++;
+//        CCLOG("key_B");
+//    }
+//
+//    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_Z)) {
+//        ResManager::getInstance()->loadres(plistList, imageList);
+//
+//    }
+//
+//    if (InputManager::getInstance()->getKeyPress(EventKeyboard::KeyCode::KEY_X)) {
+//        node->removeAllChildrenWithCleanup(true);
+//    }
 
     InputManager::getInstance()->update(dt);
 }
@@ -263,6 +252,8 @@ void MainGame::initUI() {
 
     // loadAnim();
 
+    return;
+
     test();
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -273,6 +264,7 @@ void MainGame::initUI() {
     mainSpr->setAnchorPoint(Vec2(0.5, 0.5));
     mainSpr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(mainSpr);
+
 
 
     node = Node::create();
@@ -318,6 +310,121 @@ void MainGame::updateDebugInfo() {
     // char buf[256];
     // sprintf(buf,"%f mb",getCurrentMemoryUsage() * 0.000001f);
     // debugLable->setString(buf);
+}
+
+void MainGame::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, Event *event) {
+    if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
+        if(!drawNode)
+        {
+            drawNode = DrawNode::create();
+            this->addChild(drawNode);
+        }else{
+              drawNode->removeFromParentAndCleanup(true);
+            drawNode = nullptr;
+        }
+
+
+    }
+
+    if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+
+
+        Vec2 vertices[] = {
+                Vec2(0, 0),
+                Vec2(0, 100),
+                Vec2(100, 100),
+                Vec2(100, 0)
+        };
+
+        Tex2F texCoords[] = {
+                Tex2F(0, 0),
+                Tex2F(0, 1),
+                Tex2F(1, 1),
+                Tex2F(1, 0)
+        };
+
+        unsigned short indices[] = {0, 1, 2, 3};
+
+
+        //1、先生成quads
+        PolygonInfo tempInf;
+        std::unordered_map<int, V3F_C4B_T2F_Quad> quads;
+        V3F_C4B_T2F_Quad target;
+        char buf[256];
+        sprintf(buf, "farmT_%d.png", 1);
+
+
+        for (int i = 0; i < 1; i++){
+            float x = 0;
+            float y = i;
+            auto sprFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(buf);
+            auto texRect = sprFrame->getRectInPixels();
+            auto texWidth = sprFrame->getTexture()->getPixelsWide();
+            auto texHeight = sprFrame->getTexture()->getPixelsHigh();
+
+            target.tl.vertices = Vec3(x * 32.0f, y * -32.0f, 0.0f);
+            target.tr.vertices = Vec3((x + 1) * 32.0f + 1.0f, y * -32.0f, 0.0f);
+            target.bl.vertices = Vec3(x * 32.0f, (y + 1) * -32.0f - 1.0f, 0.0f);
+            target.br.vertices = Vec3((x + 1) * 32.0f + 1.0f, (y + 1) * -32.0f - 1.0f, 0.0f);
+
+            target.tl.texCoords = Tex2F((texRect.getMinX() + 1.0f) / texWidth, (texRect.getMinY() + 1.0f) / texHeight);
+            target.tr.texCoords = Tex2F((texRect.getMaxX() - 1.0f) / texWidth, (texRect.getMinY() + 1.0f) / texHeight);
+            target.bl.texCoords = Tex2F((texRect.getMinX() + 1.0f) / texWidth, (texRect.getMaxY() - 1.0f) / texHeight);
+            target.br.texCoords = Tex2F((texRect.getMaxX() - 1.0f) / texWidth, (texRect.getMaxY() - 1.0f) / texHeight);
+
+            target.tl.colors = Color4B::WHITE;
+            target.tr.colors = Color4B::WHITE;
+            target.bl.colors = Color4B::WHITE;
+            target.br.colors = Color4B::WHITE;
+            quads[i] = target;
+
+            Texture2D* texture = sprFrame->getTexture();
+            tempInf.setFilename(texture->getPath());
+        }
+        //2、通过quads generateSprite
+        tempInf.triangles.vertCount = quads.size() * 4;
+        tempInf.triangles.indexCount = quads.size() * 6;
+        tempInf.triangles.verts = new V3F_C4B_T2F[tempInf.triangles.vertCount]; //每个顶点的数据
+        tempInf.triangles.indices = new unsigned short[tempInf.triangles.indexCount]; //索引
+
+
+        int currentVert = 0;
+        int currentIndex = 0;
+
+        for (auto& vert4: quads){
+            int x = vert4.first % 100;
+            int y = vert4.first / 100;
+
+            memcpy(&tempInf.triangles.verts[currentVert], &vert4.second, sizeof(V3F_C4B_T2F_Quad));
+
+            tempInf.triangles.indices[currentIndex + 0] = currentVert + 0;
+            tempInf.triangles.indices[currentIndex + 1] = currentVert + 1;
+            tempInf.triangles.indices[currentIndex + 2] = currentVert + 2;
+            tempInf.triangles.indices[currentIndex + 3] = currentVert + 3;
+            tempInf.triangles.indices[currentIndex + 4] = currentVert + 2;
+            tempInf.triangles.indices[currentIndex + 5] = currentVert + 1;
+
+            currentVert += 3;
+            currentIndex += 6;
+        }
+
+        //quad -> vbo
+        //indices -> ebo
+        auto spr = Sprite::create(tempInf);
+        spr->setPositionX(228.f);
+        spr->setPositionY(228.f);
+        this->addChild(spr);
+
+
+    }
+
+    if (keyCode == EventKeyboard::KeyCode::KEY_B) {
+        for (int i = 0; i < 5; ++i) {
+//            drawNode->drawTriangle(Vec2(228.f, 128.f), Vec2(260.f,128.f),Vec2(300.f,200.f), Color4F::YELLOW);
+            drawNode->drawLine(Vec2(228.f + i * 10, 128.f + i * 10), Vec2(260.f + i * 10,128.f + i * 10), Color4F::YELLOW);
+        }
+    }
+
 }
 
 

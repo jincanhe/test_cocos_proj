@@ -4,6 +4,8 @@
 
 #include "InputManager.h"
 #include "AppDelegate.h"
+#include "MainGame.h"
+
 InputManager* InputManager::inst = nullptr;
 
 InputManager *InputManager::getInstance() {
@@ -41,6 +43,7 @@ void InputManager::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, Event *
 
 void InputManager::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, Event *event) {
     keyboardThisframe[(uint8_t)keyCode] = 0;
+
 }
 
 bool InputManager::getKeyDown(cocos2d::EventKeyboard::KeyCode keyCode) {

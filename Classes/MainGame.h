@@ -28,6 +28,8 @@ public:
     void generateDebugInfo();
     void updateDebugInfo();
     void clear();
+
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, Event* event);
     //---
 
     //--common
